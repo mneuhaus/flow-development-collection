@@ -113,6 +113,9 @@ class ClassLoader {
 		$distributionComposerManifest = json_decode(file_get_contents(FLOW_PATH_ROOT . 'composer.json'));
 		$this->defaultVendorDirectory = $distributionComposerManifest->config->{'vendor-dir'};
 		$composerPath = FLOW_PATH_ROOT . $this->defaultVendorDirectory . '/composer/';
+
+		// FIXME Just a hack to initialize composer autoloading & mapping
+		include FLOW_PATH_ROOT . $this->defaultVendorDirectory . '/autoload.php';
 		$this->initializeAutoloadInformation($composerPath, $context);
 	}
 

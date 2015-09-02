@@ -27,7 +27,7 @@ require_once(__DIR__ . '/../Fixtures/ChildNodeAccessFacetViewHelper.php');
 require_once(__DIR__ . '/../../Fixtures/TestViewHelper.php');
 
 /**
- * Testcase for \TYPO3\CMS\Fluid\Core\Parser\SyntaxTree\ViewHelperNode
+ * Testcase for \TYPO3\Fluid\Core\Parser\SyntaxTree\ViewHelperNode
  */
 class ViewHelperNodeTest extends UnitTestCase {
 

@@ -11,20 +11,9 @@ namespace TYPO3\Fluid\Core\Parser\SyntaxTree;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\Fluid\Core\Rendering\RenderingContextInterface;
-
 /**
- * Root node of every syntax tree.
+ * @deprecated
  */
-class RootNode extends AbstractNode {
+class RootNode extends \NamelessCoder\Fluid\Core\Parser\SyntaxTree\RootNode {
 
-	/**
-	 * Evaluate the root node, by evaluating the subtree.
-	 *
-	 * @param RenderingContextInterface $renderingContext
-	 * @return mixed Evaluated subtree
-	 */
-	public function evaluate(RenderingContextInterface $renderingContext) {
-		return $this->evaluateChildNodes($renderingContext);
-	}
 }

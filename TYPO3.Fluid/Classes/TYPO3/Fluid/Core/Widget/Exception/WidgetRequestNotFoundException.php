@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\Fluid\Core\Parser;
+namespace TYPO3\Fluid\Core\Widget\Exception;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "TYPO3.Fluid".           *
@@ -12,9 +12,8 @@ namespace TYPO3\Fluid\Core\Parser;
  *                                                                        */
 
 /**
- * A Parsing Exception
- *
- * @api
+ * An exception if no widget Request could be found inside <f:renderChildren>.
  */
-class Exception extends \TYPO3\Fluid\Core\Exception {
+class WidgetRequestNotFoundException extends \TYPO3\Fluid\Core\Widget\Exception {
+
 }

@@ -1,7 +1,7 @@
 <?php
 namespace TYPO3\Fluid\Core\Widget\Exception;
 
-/*
+/*                                                                        *
  * This script belongs to the TYPO3 Flow package "TYPO3.Fluid".           *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
@@ -11,10 +11,9 @@ namespace TYPO3\Fluid\Core\Widget\Exception;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\Fluid\Core\Widget;
-
 /**
  * An exception if the controller is missing.
  */
-class MissingControllerException extends Widget\Exception {
+class MissingControllerException extends \TYPO3\Fluid\Core\Widget\Exception {
+
 }

@@ -31,47 +31,47 @@ class Package extends BasePackage {
 	 * @param Bootstrap $bootstrap The current bootstrap
 	 * @return void
 	 */
-	public function boot(Bootstrap $bootstrap) {
-		$dispatcher = $bootstrap->getSignalSlotDispatcher();
-
-		$context = $bootstrap->getContext();
-		if (!$context->isProduction()) {
-			$dispatcher->connect(\TYPO3\Flow\Core\Booting\Sequence::class, 'afterInvokeStep', function ($step) use ($bootstrap, $dispatcher) {
-				if ($step->getIdentifier() === 'typo3.flow:systemfilemonitor') {
-					$templateFileMonitor = \TYPO3\Flow\Monitor\FileMonitor::createFileMonitorAtBoot('Fluid_TemplateFiles', $bootstrap);
-					$packageManager = $bootstrap->getEarlyInstance(\TYPO3\Flow\Package\PackageManagerInterface::class);
-					foreach ($packageManager->getActivePackages() as $packageKey => $package) {
-						if ($packageManager->isPackageFrozen($packageKey)) {
-							continue;
-						}
-
-						foreach (array('Templates', 'Partials', 'Layouts') as $path) {
-							$templatesPath = $package->getResourcesPath() . 'Private/' . $path;
-
-							if (is_dir($templatesPath)) {
-								$templateFileMonitor->monitorDirectory($templatesPath);
-							}
-						}
-					}
-
-					$templateFileMonitor->detectChanges();
-					$templateFileMonitor->shutdownObject();
-				}
-			});
-		}
-
-			// Use a closure to invoke the TemplateCompiler, since the object is not registered during compiletime
-		$flushTemplates = function($identifier, $changedFiles) use ($bootstrap) {
-			if ($identifier !== 'Flow_ClassFiles') {
-				return;
-			}
-
-			$objectManager = $bootstrap->getObjectManager();
-			if ($objectManager->isRegistered(\TYPO3\Fluid\Core\Compiler\TemplateCompiler::class)) {
-				$templateCompiler = $objectManager->get(\TYPO3\Fluid\Core\Compiler\TemplateCompiler::class);
-				$templateCompiler->flushTemplatesOnViewHelperChanges($changedFiles);
-			}
-		};
-		$dispatcher->connect(\TYPO3\Flow\Monitor\FileMonitor::class, 'filesHaveChanged', $flushTemplates);
+	public function boot(Bootstrap $bootstrap) {		
+//		$dispatcher = $bootstrap->getSignalSlotDispatcher();
+//
+//		$context = $bootstrap->getContext();
+//		if (!$context->isProduction()) {
+//			$dispatcher->connect(\TYPO3\Flow\Core\Booting\Sequence::class, 'afterInvokeStep', function ($step) use ($bootstrap, $dispatcher) {
+//				if ($step->getIdentifier() === 'typo3.flow:systemfilemonitor') {
+//					$templateFileMonitor = \TYPO3\Flow\Monitor\FileMonitor::createFileMonitorAtBoot('Fluid_TemplateFiles', $bootstrap);
+//					$packageManager = $bootstrap->getEarlyInstance(\TYPO3\Flow\Package\PackageManagerInterface::class);
+//					foreach ($packageManager->getActivePackages() as $packageKey => $package) {
+//						if ($packageManager->isPackageFrozen($packageKey)) {
+//							continue;
+//						}
+//
+//						foreach (array('Templates', 'Partials', 'Layouts') as $path) {
+//							$templatesPath = $package->getResourcesPath() . 'Private/' . $path;
+//
+//							if (is_dir($templatesPath)) {
+//								$templateFileMonitor->monitorDirectory($templatesPath);
+//							}
+//						}
+//					}
+//
+//					$templateFileMonitor->detectChanges();
+//					$templateFileMonitor->shutdownObject();
+//				}
+//			});
+//		}
+//
+//			// Use a closure to invoke the TemplateCompiler, since the object is not registered during compiletime
+//		$flushTemplates = function($identifier, $changedFiles) use ($bootstrap) {
+//			if ($identifier !== 'Flow_ClassFiles') {
+//				return;
+//			}
+//
+//			$objectManager = $bootstrap->getObjectManager();
+//			if ($objectManager->isRegistered(\TYPO3\Fluid\Core\Compiler\TemplateCompiler::class)) {
+//				$templateCompiler = $objectManager->get(\TYPO3\Fluid\Core\Compiler\TemplateCompiler::class);
+//				$templateCompiler->flushTemplatesOnViewHelperChanges($changedFiles);
+//			}
+//		};
+//		$dispatcher->connect(\TYPO3\Flow\Monitor\FileMonitor::class, 'filesHaveChanged', $flushTemplates);
 	}
 }

@@ -12,6 +12,8 @@ namespace TYPO3\Fluid\Core\Widget;
  *                                                                        */
 
 
+use NamelessCoder\Fluid\Core\Compiler\TemplateCompiler;
+use NamelessCoder\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3\Flow\Http\Response;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Exception\ForwardException;
@@ -20,14 +22,11 @@ use TYPO3\Flow\Mvc\Exception\StopActionException;
 use TYPO3\Flow\Object\DependencyInjection\DependencyProxy;
 use TYPO3\Fluid\Core\Parser\SyntaxTree\RootNode;
 use TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\Fluid\Core\ViewHelper\Facets\ChildNodeAccessInterface;
-use TYPO3\Fluid\Core\Widget\Exception\InvalidControllerException;
-use TYPO3\Fluid\Core\Widget\Exception\MissingControllerException;
 
 /**
  * @api
  */
-abstract class AbstractWidgetViewHelper extends AbstractViewHelper implements ChildNodeAccessInterface {
+abstract class AbstractWidgetViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var boolean
@@ -279,6 +278,19 @@ abstract class AbstractWidgetViewHelper extends AbstractViewHelper implements Ch
 		if ($this->ajaxWidget) {
 			$this->widgetContext = $this->objectManager->get(\TYPO3\Fluid\Core\Widget\WidgetContext::class);
 		}
+	}
+
+	/**
+	 * @param string $argumentsName
+	 * @param string $closureName
+	 * @param string $initializationPhpCode
+	 * @param ViewHelperNode $node
+	 * @param TemplateCompiler $compiler
+	 * @return string
+	 */
+	public function compile($argumentsName, $closureName, &$initializationPhpCode, ViewHelperNode $node, TemplateCompiler $compiler) {
+		$compiler->disable();
+		return '\'\'';
 	}
 
 }

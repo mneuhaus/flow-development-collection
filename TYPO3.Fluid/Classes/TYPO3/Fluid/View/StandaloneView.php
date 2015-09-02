@@ -11,15 +11,18 @@ namespace TYPO3\Fluid\View;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use NamelessCoder\Fluid\View\Exception\InvalidTemplateResourceException;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Http\Request;
 use TYPO3\Flow\Http\Response;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Controller\Arguments;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
+use TYPO3\Flow\Mvc\FlashMessageContainer;
 use TYPO3\Flow\Mvc\Routing\UriBuilder;
+use TYPO3\Flow\Object\ObjectManagerInterface;
+use TYPO3\Flow\Utility\Environment;
 use TYPO3\Flow\Utility\Files;
-use TYPO3\Fluid\View\Exception\InvalidTemplateResourceException;
 
 /**
  * A standalone template view.
@@ -29,6 +32,24 @@ use TYPO3\Fluid\View\Exception\InvalidTemplateResourceException;
  * @api
  */
 class StandaloneView extends AbstractTemplateView {
+
+	/**
+	 * @Flow\Inject
+	 * @var Environment
+	 */
+	protected $environment;
+
+	/**
+	 * @Flow\Inject
+	 * @var FlashMessageContainer
+	 */
+	protected $flashMessageContainer;
+
+	/**
+	 * @Flow\Inject
+	 * @var ObjectManagerInterface
+	 */
+	protected $objectManager;
 
 	/**
 	 * Source code of the Fluid template
@@ -55,24 +76,6 @@ class StandaloneView extends AbstractTemplateView {
 	protected $partialRootPath = NULL;
 
 	/**
-	 * @var \TYPO3\Fluid\Core\Compiler\TemplateCompiler
-	 * @Flow\Inject
-	 */
-	protected $templateCompiler;
-
-	/**
-	 * @var \TYPO3\Flow\Utility\Environment
-	 * @Flow\Inject
-	 */
-	protected $environment;
-
-	/**
-	 * @var \TYPO3\Flow\Mvc\FlashMessageContainer
-	 * @Flow\Inject
-	 */
-	protected $flashMessageContainer;
-
-	/**
 	 * @var ActionRequest
 	 */
 	protected $request;
@@ -84,6 +87,7 @@ class StandaloneView extends AbstractTemplateView {
 	 */
 	public function __construct(ActionRequest $request = NULL) {
 		$this->request = $request;
+		parent::__construct();
 	}
 
 	/**
@@ -94,7 +98,7 @@ class StandaloneView extends AbstractTemplateView {
 	public function initializeObject() {
 		if ($this->request === NULL) {
 			$httpRequest = Request::createFromEnvironment();
-			$this->request = $this->objectManager->get(\TYPO3\Flow\Mvc\ActionRequest::class, $httpRequest);
+			$this->request = $this->objectManager->get(ActionRequest::class, $httpRequest);
 		}
 
 		$uriBuilder = new UriBuilder();
@@ -186,12 +190,12 @@ class StandaloneView extends AbstractTemplateView {
 	 * Returns the absolute path to the folder that contains Fluid layout files
 	 *
 	 * @return string Fluid layout root path
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 * @api
 	 */
 	public function getLayoutRootPath() {
 		if ($this->layoutRootPath === NULL && $this->templatePathAndFilename === NULL) {
-			throw new Exception\InvalidTemplateResourceException('No layout root path has been specified. Use setLayoutRootPath().', 1288091419);
+			throw new InvalidTemplateResourceException('No layout root path has been specified. Use setLayoutRootPath().', 1288091419);
 		}
 		if ($this->layoutRootPath === NULL) {
 			$this->layoutRootPath = dirname($this->templatePathAndFilename) . '/Layouts';
@@ -214,12 +218,12 @@ class StandaloneView extends AbstractTemplateView {
 	 * Returns the absolute path to the folder that contains Fluid partial files
 	 *
 	 * @return string Fluid partial root path
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 * @api
 	 */
 	public function getPartialRootPath() {
 		if ($this->partialRootPath === NULL && $this->templatePathAndFilename === NULL) {
-			throw new Exception\InvalidTemplateResourceException('No partial root path has been specified. Use setPartialRootPath().', 1288094511);
+			throw new InvalidTemplateResourceException('No partial root path has been specified. Use setPartialRootPath().', 1288094511);
 		}
 		if ($this->partialRootPath === NULL) {
 			$this->partialRootPath = dirname($this->templatePathAndFilename) . '/Partials';
@@ -237,7 +241,7 @@ class StandaloneView extends AbstractTemplateView {
 		try {
 			$this->getTemplateSource();
 			return TRUE;
-		} catch (Exception\InvalidTemplateResourceException $e) {
+		} catch (InvalidTemplateResourceException $e) {
 			return FALSE;
 		}
 	}
@@ -248,7 +252,7 @@ class StandaloneView extends AbstractTemplateView {
 	 *
 	 * @param string $actionName Name of the action. This argument is not used in this view!
 	 * @return string template identifier
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 */
 	protected function getTemplateIdentifier($actionName = NULL) {
 		if ($this->templateSource === NULL) {
@@ -275,15 +279,15 @@ class StandaloneView extends AbstractTemplateView {
 	 *
 	 * @param string $actionName Name of the action. This argument is not used in this view!
 	 * @return string Fluid template source
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 */
 	protected function getTemplateSource($actionName = NULL) {
 		if ($this->templateSource === NULL && $this->templatePathAndFilename === NULL) {
-			throw new Exception\InvalidTemplateResourceException('No template has been specified. Use either setTemplateSource() or setTemplatePathAndFilename().', 1288085266);
+			throw new InvalidTemplateResourceException('No template has been specified. Use either setTemplateSource() or setTemplatePathAndFilename().', 1288085266);
 		}
 		if ($this->templateSource === NULL) {
 			if (!is_file($this->templatePathAndFilename)) {
-				throw new Exception\InvalidTemplateResourceException('Template could not be found at "' . $this->templatePathAndFilename . '".', 1288087061);
+				throw new InvalidTemplateResourceException('Template could not be found at "' . $this->templatePathAndFilename . '".', 1288087061);
 			}
 			$this->templateSource = file_get_contents($this->templatePathAndFilename);
 		}
@@ -309,13 +313,13 @@ class StandaloneView extends AbstractTemplateView {
 	 *
 	 * @param string $layoutName Name of the layout to use. If none given, use "Default"
 	 * @return string contents of the layout file if it was found
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 */
 	protected function getLayoutSource($layoutName = 'Default') {
 		$layoutPathAndFilename = $this->getLayoutPathAndFilename($layoutName);
 		$layoutSource = file_get_contents($layoutPathAndFilename);
 		if ($layoutSource === FALSE) {
-			throw new Exception\InvalidTemplateResourceException('"' . $layoutPathAndFilename . '" is not a valid template resource URI.', 1312215888);
+			throw new InvalidTemplateResourceException('"' . $layoutPathAndFilename . '" is not a valid template resource URI.', 1312215888);
 		}
 		return $layoutSource;
 	}
@@ -330,12 +334,12 @@ class StandaloneView extends AbstractTemplateView {
 	 *
 	 * @param string $layoutName Name of the layout to use. If none given, use "Default"
 	 * @return string Path and filename of layout files
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 */
 	protected function getLayoutPathAndFilename($layoutName = 'Default') {
 		$layoutRootPath = $this->getLayoutRootPath();
 		if (!is_dir($layoutRootPath)) {
-			throw new Exception\InvalidTemplateResourceException('Layout root path "' . $layoutRootPath . '" does not exist.', 1288092521);
+			throw new InvalidTemplateResourceException('Layout root path "' . $layoutRootPath . '" does not exist.', 1288092521);
 		}
 		$possibleLayoutPaths = array();
 		$possibleLayoutPaths[] = Files::getUnixStylePath($layoutRootPath . '/' . $layoutName . '.' . $this->getRequest()->getFormat());
@@ -345,7 +349,7 @@ class StandaloneView extends AbstractTemplateView {
 				return $layoutPathAndFilename;
 			}
 		}
-		throw new Exception\InvalidTemplateResourceException('Could not load layout file. Tried following paths: "' . implode('", "', $possibleLayoutPaths) . '".', 1288092555);
+		throw new InvalidTemplateResourceException('Could not load layout file. Tried following paths: "' . implode('", "', $possibleLayoutPaths) . '".', 1288092555);
 	}
 
 	/**
@@ -367,13 +371,13 @@ class StandaloneView extends AbstractTemplateView {
 	 *
 	 * @param string $partialName The name of the partial
 	 * @return string contents of the layout file if it was found
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 */
 	protected function getPartialSource($partialName) {
 		$partialPathAndFilename = $this->getPartialPathAndFilename($partialName);
 		$partialSource = file_get_contents($partialPathAndFilename);
 		if ($partialSource === FALSE) {
-			throw new Exception\InvalidTemplateResourceException('"' . $partialPathAndFilename . '" is not a valid template resource URI.', 1257246929);
+			throw new InvalidTemplateResourceException('"' . $partialPathAndFilename . '" is not a valid template resource URI.', 1257246929);
 		}
 		return $partialSource;
 	}
@@ -383,12 +387,12 @@ class StandaloneView extends AbstractTemplateView {
 	 *
 	 * @param string $partialName The name of the partial
 	 * @return string the full path which should be used. The path definitely exists.
-	 * @throws Exception\InvalidTemplateResourceException
+	 * @throws InvalidTemplateResourceException
 	 */
 	protected function getPartialPathAndFilename($partialName) {
 		$partialRootPath = $this->getPartialRootPath();
 		if (!is_dir($partialRootPath)) {
-			throw new Exception\InvalidTemplateResourceException('Partial root path "' . $partialRootPath . '" does not exist.', 1288094648);
+			throw new InvalidTemplateResourceException('Partial root path "' . $partialRootPath . '" does not exist.', 1288094648);
 		}
 		$possiblePartialPaths = array();
 		$possiblePartialPaths[] = Files::getUnixStylePath($partialRootPath . '/' . $partialName . '.' . $this->getRequest()->getFormat());
@@ -398,7 +402,7 @@ class StandaloneView extends AbstractTemplateView {
 				return $partialPathAndFilename;
 			}
 		}
-		throw new Exception\InvalidTemplateResourceException('Could not load partial file. Tried following paths: "' . implode('", "', $possiblePartialPaths) . '".', 1288092555);
+		throw new InvalidTemplateResourceException('Could not load partial file. Tried following paths: "' . implode('", "', $possiblePartialPaths) . '".', 1288092555);
 	}
 
 	/**

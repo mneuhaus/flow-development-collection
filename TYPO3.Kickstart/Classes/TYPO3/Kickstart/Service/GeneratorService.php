@@ -11,6 +11,7 @@ namespace TYPO3\Kickstart\Service;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use NamelessCoder\Fluid\Core\Parser\TemplateParser;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -32,7 +33,7 @@ class GeneratorService {
 	protected $packageManager;
 
 	/**
-	 * @var \TYPO3\Fluid\Core\Parser\TemplateParser
+	 * @var TemplateParser
 	 * @Flow\Inject
 	 */
 	protected $templateParser;

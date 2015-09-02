@@ -11,68 +11,36 @@ namespace TYPO3\Fluid\Core\ViewHelper;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use NamelessCoder\Fluid\Core\Rendering\RenderingContextInterface;
+use NamelessCoder\Fluid\Core\ViewHelper\ViewHelperInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Log\SystemLoggerInterface;
+use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Object\ObjectManagerInterface;
-use TYPO3\Fluid\Core\Compiler\TemplateCompiler;
-use TYPO3\Fluid\Core\Parser;
-use TYPO3\Fluid\Core\Parser\SyntaxTree\AbstractNode;
-use TYPO3\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
-use TYPO3\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3\Fluid\Fluid;
+use TYPO3\Flow\Reflection\ReflectionService;
+use TYPO3\Fluid\Core\Exception;
+use TYPO3\Fluid\Core\Rendering\RenderingContext;
+use TYPO3\Fluid\Core\Variables\FlowVariableProvider;
 
 /**
- * The abstract base class for all view helpers.
+ * TODO
  *
  * @api
  */
-abstract class AbstractViewHelper {
-
-	/**
-	 * TRUE if arguments have already been initialized
-	 * @var boolean
-	 */
-	private $argumentsInitialized = FALSE;
-
-	/**
-	 * Stores all \TYPO3\Fluid\ArgumentDefinition instances
-	 * @var array
-	 */
-	private $argumentDefinitions = array();
-
-	/**
-	 * Cache of argument definitions; the key is the ViewHelper class name, and the
-	 * value is the array of argument definitions.
-	 *
-	 * In our benchmarks, this cache leads to a 40% improvement when using a certain
-	 * ViewHelper class many times throughout the rendering process.
-	 * @var array
-	 */
-	static private $argumentDefinitionCache = array();
-
-	/**
-	 * Current view helper node
-	 * @var ViewHelperNode
-	 */
-	private $viewHelperNode;
-
-	/**
-	 * Arguments array.
-	 * @var array
-	 * @api
-	 */
-	protected $arguments;
+abstract class AbstractViewHelper extends \NamelessCoder\Fluid\Core\ViewHelper\AbstractViewHelper implements ViewHelperInterface {
 
 	/**
 	 * Current variable container reference.
-	 * @var \TYPO3\Fluid\Core\ViewHelper\TemplateVariableContainer
+	 *
+	 * @var FlowVariableProvider
 	 * @api
 	 */
 	protected $templateVariableContainer;
 
 	/**
 	 * Controller Context to use
-	 * @var \TYPO3\Flow\Mvc\Controller\ControllerContext
+	 *
+	 * @var ControllerContext
 	 * @api
 	 */
 	protected $controllerContext;
@@ -83,127 +51,53 @@ abstract class AbstractViewHelper {
 	protected $renderingContext;
 
 	/**
-	 * @var \Closure
+	 * Reflection service
+	 *
+	 * @Flow\Inject
+	 * @var ReflectionService
 	 */
-	protected $renderChildrenClosure = NULL;
+	protected $reflectionService;
 
 	/**
-	 * ViewHelper Variable Container
-	 * @var \TYPO3\Fluid\Core\ViewHelper\ViewHelperVariableContainer
-	 * @api
-	 */
-	protected $viewHelperVariableContainer;
-
-	/**
+	 * @Flow\Inject
 	 * @var ObjectManagerInterface
 	 */
 	protected $objectManager;
 
 	/**
+	 * @Flow\Inject
 	 * @var SystemLoggerInterface
 	 */
 	protected $systemLogger;
 
 	/**
 	 * With this flag, you can disable the escaping interceptor inside this ViewHelper.
-	 *
-	 * @var boolean
-	 * @deprecated since 3.0 Use $escapeChildren instead!
+	 * THIS MIGHT CHANGE WITHOUT NOTICE, NO PUBLIC API!
+	 * @var bool
 	 */
-	protected $escapingInterceptorEnabled = NULL;
+	protected $escapingInterceptorEnabled = TRUE;
 
 	/**
-	 * Specifies whether the escaping interceptors should be disabled or enabled for the result of renderChildren() calls within this ViewHelper
-	 * @see isChildrenEscapingEnabled()
-	 *
-	 * Note: If this is NULL the value of $this->escapingInterceptorEnabled is considered for backwards compatibility
-	 *
-	 * @var boolean
-	 * @api
+	 * @param ReflectionService $reflectionService
 	 */
-	protected $escapeChildren = NULL;
-
-	/**
-	 * Specifies whether the escaping interceptors should be disabled or enabled for the render-result of this ViewHelper
-	 * @see isOutputEscapingEnabled()
-	 *
-	 * @var boolean
-	 * @api
-	 */
-	protected $escapeOutput = NULL;
-
-	/**
-	 * @param ObjectManagerInterface $objectManager
-	 * @return void
-	 */
-	public function injectObjectManager(ObjectManagerInterface $objectManager) {
-		$this->objectManager = $objectManager;
-	}
-
-	/**
-	 * @param SystemLoggerInterface $systemLogger
-	 * @return void
-	 */
-	public function injectSystemLogger(SystemLoggerInterface $systemLogger) {
-		$this->systemLogger = $systemLogger;
-	}
-
-	/**
-	 * @param array $arguments
-	 * @return void
-	 */
-	public function setArguments(array $arguments) {
-		$this->arguments = $arguments;
+	public function __construct(ReflectionService $reflectionService) {
+		$this->reflectionService = $reflectionService;
 	}
 
 	/**
 	 * @param RenderingContextInterface $renderingContext
 	 * @return void
+	 * @throws \TYPO3\Flow\Exception
 	 */
 	public function setRenderingContext(RenderingContextInterface $renderingContext) {
+		if (!$renderingContext instanceof RenderingContext) {
+			// FIXME
+			throw new \TYPO3\Flow\Exception('invalid rendering context..');
+		}
 		$this->renderingContext = $renderingContext;
-		$this->templateVariableContainer = $renderingContext->getTemplateVariableContainer();
-		if ($renderingContext->getControllerContext() !== NULL) {
-			$this->controllerContext = $renderingContext->getControllerContext();
-		}
+		$this->controllerContext = $renderingContext->getControllerContext();
+		$this->templateVariableContainer = $renderingContext->getVariableProvider();
 		$this->viewHelperVariableContainer = $renderingContext->getViewHelperVariableContainer();
-	}
-
-	/**
-	 * Returns whether the escaping interceptors should be disabled or enabled for the result of renderChildren() calls within this ViewHelper
-	 *
-	 * Note: This method is no public API, use $this->escapeChildren instead!
-	 *
-	 * @return boolean
-	 */
-	public function isChildrenEscapingEnabled() {
-		if ($this->escapeChildren !== NULL) {
-			return $this->escapeChildren !== FALSE;
-		}
-		return $this->escapingInterceptorEnabled !== FALSE;
-	}
-
-	/**
-	 * Returns whether the escaping interceptors should be disabled or enabled inside the tags contents.
-	 *
-	 * THIS METHOD MIGHT CHANGE WITHOUT NOTICE; NO PUBLIC API!
-	 *
-	 * @deprecated since 3.0 use isChildrenEscapingEnabled() instead
-	 * @return boolean
-	 */
-	public function isEscapingInterceptorEnabled() {
-		return $this->isChildrenEscapingEnabled();
-	}
-
-	/**
-	 * Returns whether the escaping interceptors should be disabled or enabled for the render-result of this ViewHelper
-	 *
-	 * Note: This method is no public API, use $this->escapeChildren instead!
-	 *
-	 * @return boolean
-	 */
-	public function isOutputEscapingEnabled() {
-		return $this->escapeOutput !== FALSE;
 	}
 
 	/**
@@ -213,9 +107,9 @@ abstract class AbstractViewHelper {
 	 * @param string $name Name of the argument
 	 * @param string $type Type of the argument
 	 * @param string $description Description of the argument
-	 * @param boolean $required If TRUE, argument is required. Defaults to FALSE.
+	 * @param bool $required If TRUE, argument is required. Defaults to FALSE.
 	 * @param mixed $defaultValue Default value of argument
-	 * @return \TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper $this, to allow chaining.
+	 * @return $this, to allow chaining.
 	 * @throws Exception
 	 * @api
 	 */
@@ -225,40 +119,6 @@ abstract class AbstractViewHelper {
 		}
 		$this->argumentDefinitions[$name] = new ArgumentDefinition($name, $type, $description, $required, $defaultValue);
 		return $this;
-	}
-
-	/**
-	 * Overrides a registered argument. Call this method from your ViewHelper subclass
-	 * inside the initializeArguments() method if you want to override a previously registered argument.
-	 * @see registerArgument()
-	 *
-	 * @param string $name Name of the argument
-	 * @param string $type Type of the argument
-	 * @param string $description Description of the argument
-	 * @param boolean $required If TRUE, argument is required. Defaults to FALSE.
-	 * @param mixed $defaultValue Default value of argument
-	 * @return \TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper $this, to allow chaining.
-	 * @throws Exception
-	 * @api
-	 */
-	protected function overrideArgument($name, $type, $description, $required = FALSE, $defaultValue = NULL) {
-		if (!array_key_exists($name, $this->argumentDefinitions)) {
-			throw new Exception('Argument "' . $name . '" has not been defined, thus it can\'t be overridden.', 1279212461);
-		}
-		$this->argumentDefinitions[$name] = new ArgumentDefinition($name, $type, $description, $required, $defaultValue);
-		return $this;
-	}
-
-	/**
-	 * Sets all needed attributes needed for the rendering. Called by the
-	 * framework. Populates $this->viewHelperNode.
-	 * This is PURELY INTERNAL! Never override this method!!
-	 *
-	 * @param ViewHelperNode $node View Helper node to be set.
-	 * @return void
-	 */
-	public function setViewHelperNode(ViewHelperNode $node) {
-		$this->viewHelperNode = $node;
 	}
 
 	/**
@@ -272,18 +132,6 @@ abstract class AbstractViewHelper {
 	}
 
 	/**
-	 * Initialize the arguments of the ViewHelper, and call the render() method of the ViewHelper.
-	 *
-	 * @return string the rendered ViewHelper.
-	 */
-	public function initializeArgumentsAndRender() {
-		$this->validateArguments();
-		$this->initialize();
-
-		return $this->callRenderMethod();
-	}
-
-	/**
 	 * Call the render() method and handle errors.
 	 *
 	 * @return string the rendered ViewHelper
@@ -291,9 +139,8 @@ abstract class AbstractViewHelper {
 	 */
 	protected function callRenderMethod() {
 		$renderMethodParameters = array();
-		/** @var $argumentDefinition ArgumentDefinition */
 		foreach ($this->argumentDefinitions as $argumentName => $argumentDefinition) {
-			if ($argumentDefinition->isMethodParameter()) {
+			if ($argumentDefinition instanceof ArgumentDefinition && $argumentDefinition->isMethodParameter()) {
 				$renderMethodParameters[$argumentName] = $this->arguments[$argumentName];
 			}
 		}
@@ -346,66 +193,41 @@ abstract class AbstractViewHelper {
 	 */
 	protected function buildRenderChildrenClosure() {
 		$self = $this;
-		return function() use ($self) {
+		return function () use ($self) {
 			return $self->renderChildren();
 		};
-	}
-
-	/**
-	 * Initialize all arguments and return them
-	 *
-	 * @return array Array of \TYPO3\Fluid\Core\ViewHelper\ArgumentDefinition instances.
-	 */
-	public function prepareArguments() {
-		if (!$this->argumentsInitialized) {
-			$thisClassName = get_class($this);
-			if (isset(self::$argumentDefinitionCache[$thisClassName])) {
-				$this->argumentDefinitions = self::$argumentDefinitionCache[$thisClassName];
-			} else {
-				$this->registerRenderMethodArguments();
-				$this->initializeArguments();
-				self::$argumentDefinitionCache[$thisClassName] = $this->argumentDefinitions;
-			}
-			$this->argumentsInitialized = TRUE;
-		}
-		return $this->argumentDefinitions;
 	}
 
 	/**
 	 * Register method arguments for "render" by analysing the doc comment above.
 	 *
 	 * @return void
-	 * @throws Parser\Exception
+	 * @throws Exception
 	 */
-	private function registerRenderMethodArguments() {
-		$methodParameters = static::getRenderMethodParameters($this->objectManager);
+	protected function registerRenderMethodArguments() {
+		$methodParameters = $this->reflectionService->getMethodParameters(get_class($this), 'render');
 		if (count($methodParameters) === 0) {
 			return;
 		}
 
-		if (Fluid::$debugMode) {
-			$methodTags = static::getRenderMethodTagsValues($this->objectManager);
+		$methodTags = $this->reflectionService->getMethodTagsValues(get_class($this), 'render');
 
-			$paramAnnotations = array();
-			if (isset($methodTags['param'])) {
-				$paramAnnotations = $methodTags['param'];
-			}
+		$paramAnnotations = array();
+		if (isset($methodTags['param'])) {
+			$paramAnnotations = $methodTags['param'];
 		}
 
 		$i = 0;
 		foreach ($methodParameters as $parameterName => $parameterInfo) {
 			$dataType = NULL;
 			if (isset($parameterInfo['type'])) {
-				$dataType = $parameterInfo['type'];
-			} elseif ($parameterInfo['array']) {
-				$dataType = 'array';
-			}
-			if ($dataType === NULL) {
-				throw new Parser\Exception('could not determine type of argument "' . $parameterName . '" of the render-method in ViewHelper "' . get_class($this) . '". Either the methods docComment is invalid or some PHP optimizer strips off comments.', 1242292003);
+				$dataType = isset($parameterInfo['array']) && (bool)$parameterInfo['array'] ? 'array' : $parameterInfo['type'];
+			} else {
+				throw new Exception('could not determine type of argument "' . $parameterName . '" of the render-method in ViewHelper "' . get_class($this) . '". Either the methods docComment is invalid or some PHP optimizer strips off comments.', 1242292003);
 			}
 
 			$description = '';
-			if (Fluid::$debugMode && isset($paramAnnotations[$i])) {
+			if (isset($paramAnnotations[$i])) {
 				$explodedAnnotation = explode(' ', $paramAnnotations[$i]);
 				array_shift($explodedAnnotation);
 				array_shift($explodedAnnotation);
@@ -421,154 +243,11 @@ abstract class AbstractViewHelper {
 	}
 
 	/**
-	 * Returns a map of render method parameters.
-	 *
-	 * @param \TYPO3\Flow\Object\ObjectManagerInterface $objectManager
-	 * @return array Array of render method parameters
-	 * @Flow\CompileStatic
+	 * @return ArgumentDefinition[]
 	 */
-	static public function getRenderMethodParameters($objectManager) {
-		$className = get_called_class();
-		if (!is_callable(array($className, 'render'))) {
-			return array();
-		}
-
-		$reflectionService = $objectManager->get(\TYPO3\Flow\Reflection\ReflectionService::class);
-		return $reflectionService->getMethodParameters($className, 'render');
+	public function prepareArguments() {
+		$this->registerRenderMethodArguments();
+		return parent::prepareArguments();
 	}
 
-	/**
-	 * Returns a map of render method tag values.
-	 *
-	 * @param \TYPO3\Flow\Object\ObjectManagerInterface $objectManager
-	 * @return array An array of tags and their values or an empty array if no tags were found
-	 * @Flow\CompileStatic
-	 */
-	static public function getRenderMethodTagsValues($objectManager) {
-		$className = get_called_class();
-		if (!is_callable(array($className, 'render'))) {
-			return array();
-		}
-
-		$reflectionService = $objectManager->get(\TYPO3\Flow\Reflection\ReflectionService::class);
-		return $reflectionService->getMethodTagsValues($className, 'render');
-	}
-
-	/**
-	 * Validate arguments, and throw exception if arguments do not validate.
-	 *
-	 * @return void
-	 * @throws \InvalidArgumentException
-	 */
-	public function validateArguments() {
-		$argumentDefinitions = $this->prepareArguments();
-		if (!count($argumentDefinitions)) {
-			return;
-		}
-
-		/** @var $registeredArgument ArgumentDefinition */
-		foreach ($argumentDefinitions as $argumentName => $registeredArgument) {
-			if ($this->hasArgument($argumentName)) {
-				if ($this->arguments[$argumentName] === $registeredArgument->getDefaultValue()) {
-					continue;
-				}
-
-				$type = $registeredArgument->getType();
-				if ($type === 'array') {
-					if (!is_array($this->arguments[$argumentName]) && !$this->arguments[$argumentName] instanceof \ArrayAccess && !$this->arguments[$argumentName] instanceof \Traversable) {
-						throw new \InvalidArgumentException('The argument "' . $argumentName . '" was registered with type "array", but is of type "' . gettype($this->arguments[$argumentName]) . '" in view helper "' . get_class($this) . '"', 1237900529);
-					}
-				} elseif ($type === 'boolean') {
-					if (!is_bool($this->arguments[$argumentName])) {
-						throw new \InvalidArgumentException('The argument "' . $argumentName . '" was registered with type "boolean", but is of type "' . gettype($this->arguments[$argumentName]) . '" in view helper "' . get_class($this) . '".', 1240227732);
-					}
-				} elseif (class_exists($type, FALSE)) {
-					if (!($this->arguments[$argumentName] instanceof $type)) {
-						if (is_object($this->arguments[$argumentName])) {
-							throw new \InvalidArgumentException('The argument "' . $argumentName . '" was registered with type "' . $type . '", but is of type "' . get_class($this->arguments[$argumentName]) . '" in view helper "' . get_class($this) . '".', 1256475114);
-						} else {
-							throw new \InvalidArgumentException('The argument "' . $argumentName . '" was registered with type "' . $type . '", but is of type "' . gettype($this->arguments[$argumentName]) . '" in view helper "' . get_class($this) . '".', 1256475113);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Initialize all arguments. You need to override this method and call
-	 * $this->registerArgument(...) inside this method, to register all your arguments.
-	 *
-	 * @return void
-	 * @api
-	 */
-	public function initializeArguments() {
-	}
-
-	/**
-	 * Render method you need to implement for your custom view helper.
-	 * Available objects at this point are $this->arguments, and $this->templateVariableContainer.
-	 *
-	 * Besides, you often need $this->renderChildren().
-	 *
-	 * @return string rendered string, view helper specific
-	 * @api
-	 */
-	// abstract public function render();
-
-	/**
-	 * Tests if the given $argumentName is set, and not NULL.
-	 *
-	 * @param string $argumentName
-	 * @return boolean TRUE if $argumentName is found, FALSE otherwise
-	 * @api
-	 */
-	protected function hasArgument($argumentName) {
-		return isset($this->arguments[$argumentName]) && $this->arguments[$argumentName] !== NULL;
-	}
-
-	/**
-	 * Default implementation for CompilableInterface. By default,
-	 * inserts a renderStatic() call to itself.
-	 *
-	 * You only should override this method *when you absolutely know what you
-	 * are doing*, and really want to influence the generated PHP code during
-	 * template compilation directly.
-	 *
-	 * @param string $argumentsVariableName
-	 * @param string $renderChildrenClosureVariableName
-	 * @param string $initializationPhpCode
-	 * @param AbstractNode $syntaxTreeNode
-	 * @param TemplateCompiler $templateCompiler
-	 * @return string
-	 * @see \TYPO3\Fluid\Core\ViewHelper\Facets\CompilableInterface
-	 */
-	public function compile($argumentsVariableName, $renderChildrenClosureVariableName, &$initializationPhpCode, AbstractNode $syntaxTreeNode, TemplateCompiler $templateCompiler) {
-		return sprintf('%s::renderStatic(%s, %s, $renderingContext)',
-			get_class($this), $argumentsVariableName, $renderChildrenClosureVariableName);
-	}
-
-	/**
-	 * Default implementation for CompilableInterface. See CompilableInterface
-	 * for a detailed description of this method.
-	 *
-	 * @param array $arguments
-	 * @param \Closure $renderChildrenClosure
-	 * @param RenderingContextInterface $renderingContext
-	 * @return mixed
-	 * @see \TYPO3\Fluid\Core\ViewHelper\Facets\CompilableInterface
-	 */
-	static public function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext) {
-		return NULL;
-	}
-
-	/**
-	 * Resets the ViewHelper state.
-	 *
-	 * Overwrite this method if you need to get a clean state of your ViewHelper.
-	 *
-	 * @return void
-	 */
-	public function resetState() {
-	}
 }

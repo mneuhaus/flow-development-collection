@@ -11,8 +11,8 @@ namespace TYPO3\Fluid\Core\Cache;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Cache\FluidCacheInterface;
 use TYPO3\Flow\Cache\Frontend\PhpFrontend;
+use TYPO3Fluid\Fluid\Core\Cache\FluidCacheInterface;
 
 /**
  * Connector class that enables the TYPO3 cache called "fluid_template" to be operated with the interface appropriate for the Fluid engine.

@@ -11,7 +11,6 @@ namespace TYPO3\Fluid\View;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Parser\Configuration;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
@@ -20,13 +19,14 @@ use TYPO3\Flow\Mvc\View\ViewInterface;
 use TYPO3\Fluid\Core\Parser\Interceptor\ResourceInterceptor;
 use TYPO3\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\Fluid\Core\ViewHelper\ViewHelperResolver;
+use TYPO3Fluid\Fluid\Core\Parser\Configuration;
 
 /**
  * Abstract Fluid Template View.
  *
  * Contains the fundamental methods which any Fluid based template view needs.
  */
-abstract class AbstractTemplateView extends \NamelessCoder\Fluid\View\AbstractTemplateView implements ViewInterface {
+abstract class AbstractTemplateView extends \TYPO3Fluid\Fluid\View\AbstractTemplateView implements ViewInterface {
 
 	/**
 	 * @Flow\Inject

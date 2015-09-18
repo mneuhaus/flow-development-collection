@@ -11,16 +11,16 @@ namespace TYPO3\Fluid\View;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\View\Exception\InvalidTemplateResourceException;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
 use TYPO3\Flow\Utility\Files;
+use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 
 /**
  * Class TemplatePaths
  *
  * TODO
  */
-class TemplatePaths extends \NamelessCoder\Fluid\View\TemplatePaths {
+class TemplatePaths extends \TYPO3Fluid\Fluid\View\TemplatePaths {
 
 	/**
 	 * @var array

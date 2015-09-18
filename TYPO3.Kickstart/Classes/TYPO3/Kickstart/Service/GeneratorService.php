@@ -11,8 +11,8 @@ namespace TYPO3\Kickstart\Service;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Parser\TemplateParser;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3Fluid\Fluid\Core\Parser\TemplateParser;
 
 /**
  * Service for the Kickstart generator

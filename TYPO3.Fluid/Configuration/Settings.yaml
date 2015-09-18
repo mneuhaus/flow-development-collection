@@ -10,4 +10,4 @@ TYPO3:
     object:
       includeClasses:
         # FIXME: We need to exclude StandardVariableProvider because of it's constructor arguments that can't be proxied for some reason
-        'namelesscoder.fluid' : ['(?!^NamelessCoder\\Fluid\\Core\\Variables\\StandardVariableProvider$)(^.*$).*']
+        'typo3fluid.fluid' : ['(?!^TYPO3Fluid\\Fluid\\Core\\Variables\\StandardVariableProvider$)(^.*$).*']

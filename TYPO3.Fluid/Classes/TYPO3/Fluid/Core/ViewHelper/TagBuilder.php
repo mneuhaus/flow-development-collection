@@ -14,5 +14,5 @@ namespace TYPO3\Fluid\Core\ViewHelper;
 /**
  * @deprecated
  */
-class TagBuilder extends \NamelessCoder\Fluid\Core\ViewHelper\TagBuilder {
+class TagBuilder extends \TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder {
 }

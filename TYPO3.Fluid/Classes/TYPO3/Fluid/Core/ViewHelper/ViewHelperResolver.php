@@ -11,12 +11,12 @@ namespace TYPO3\Fluid\Core\ViewHelper;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\Expression\CastingExpressionNode;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\Expression\MathExpressionNode;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\Expression\TernaryExpressionNode;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Object\ObjectManagerInterface;
 use TYPO3\Fluid\Core\Parser\SyntaxTree\Expression\LegacyNamespaceExpressionNode;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\CastingExpressionNode;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\MathExpressionNode;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\TernaryExpressionNode;
 
 /**
  * Class ViewHelperResolver
@@ -36,7 +36,7 @@ use TYPO3\Fluid\Core\Parser\SyntaxTree\Expression\LegacyNamespaceExpressionNode;
  * to effectively create aliases for the Fluid core ViewHelpers
  * to be loaded in the TYPO3\Fluid\ViewHelpers scope as well.
  */
-class ViewHelperResolver extends \NamelessCoder\Fluid\Core\ViewHelper\ViewHelperResolver {
+class ViewHelperResolver extends \TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolver {
 
 	/**
 	 * @var bool

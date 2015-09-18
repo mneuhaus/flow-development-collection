@@ -37,7 +37,7 @@ abstract class AbstractTagBasedViewHelper extends AbstractViewHelper {
 	/**
 	 * Tag builder instance
 	 *
-	 * @var \NamelessCoder\Fluid\Core\ViewHelper\TagBuilder
+	 * @var \TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder
 	 * @api
 	 */
 	protected $tag = NULL;
@@ -53,10 +53,10 @@ abstract class AbstractTagBasedViewHelper extends AbstractViewHelper {
 	/**
 	 * Inject a TagBuilder
 	 *
-	 * @param \NamelessCoder\Fluid\Core\ViewHelper\TagBuilder $tagBuilder Tag builder
+	 * @param \TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder $tagBuilder Tag builder
 	 * @return void
 	 */
-	public function injectTagBuilder(\NamelessCoder\Fluid\Core\ViewHelper\TagBuilder $tagBuilder) {
+	public function injectTagBuilder(\TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder $tagBuilder) {
 		$this->tag = $tagBuilder;
 	}
 

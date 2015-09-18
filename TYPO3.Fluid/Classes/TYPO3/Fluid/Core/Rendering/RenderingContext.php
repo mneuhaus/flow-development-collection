@@ -19,7 +19,7 @@ use TYPO3\Flow\Object\ObjectManagerInterface;
 /**
  * The rendering context that contains useful information during rendering time of a Fluid template
  */
-class RenderingContext extends \NamelessCoder\Fluid\Core\Rendering\RenderingContext {
+class RenderingContext extends \TYPO3Fluid\Fluid\Core\Rendering\RenderingContext {
 
 	/**
 	 * Object manager which is bubbled through. The ViewHelperNode cannot get an ObjectManager injected because
@@ -40,7 +40,7 @@ class RenderingContext extends \NamelessCoder\Fluid\Core\Rendering\RenderingCont
 //	/**
 //	 * ViewHelper Variable Container
 //	 *
-//	 * var \NamelessCoder\Fluid\Core\ViewHelper\ViewHelperVariableContainer
+//	 * var \TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperVariableContainer
 //	 */
 //	protected $viewHelperVariableContainer;
 

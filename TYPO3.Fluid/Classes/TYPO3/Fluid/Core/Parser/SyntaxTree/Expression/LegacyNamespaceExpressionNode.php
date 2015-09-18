@@ -11,10 +11,10 @@ namespace TYPO3\Fluid\Core\Parser\SyntaxTree\Expression;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Parser\ParsingState;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\Expression\AbstractExpressionNode;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\Expression\ExpressionNodeInterface;
-use NamelessCoder\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\Parser\ParsingState;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\AbstractExpressionNode;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\Expression\ExpressionNodeInterface;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Class LegacyNamespaceExpression

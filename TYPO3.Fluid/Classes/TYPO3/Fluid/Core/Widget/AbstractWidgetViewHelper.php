@@ -12,8 +12,6 @@ namespace TYPO3\Fluid\Core\Widget;
  *                                                                        */
 
 
-use NamelessCoder\Fluid\Core\Compiler\TemplateCompiler;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3\Flow\Http\Response;
 use TYPO3\Flow\Mvc\ActionRequest;
 use TYPO3\Flow\Mvc\Exception\ForwardException;
@@ -22,6 +20,8 @@ use TYPO3\Flow\Mvc\Exception\StopActionException;
 use TYPO3\Flow\Object\DependencyInjection\DependencyProxy;
 use TYPO3\Fluid\Core\Parser\SyntaxTree\RootNode;
 use TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\Compiler\TemplateCompiler;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 
 /**
  * @api

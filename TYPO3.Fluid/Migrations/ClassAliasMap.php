@@ -1,20 +1,20 @@
 <?php
-use NamelessCoder\Fluid\Core\Exception;
-use NamelessCoder\Fluid\Core\Parser\InterceptorInterface;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\AbstractNode;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\NodeInterface;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\RootNode;
-use NamelessCoder\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
-use NamelessCoder\Fluid\Core\Parser\TemplateParser;
-use NamelessCoder\Fluid\Core\Rendering\RenderingContextInterface;
-use NamelessCoder\Fluid\Core\ViewHelper\Exception as ViewHelperException;
-use NamelessCoder\Fluid\Core\ViewHelper\ViewHelperInterface;
-use NamelessCoder\Fluid\Core\ViewHelper\ViewHelperVariableContainer;
-use NamelessCoder\Fluid\Core\ViewHelper\TagBuilder;
-use NamelessCoder\Fluid\Core\Variables\StandardVariableProvider;
-use NamelessCoder\Fluid\View\Exception as ViewException;
-use NamelessCoder\Fluid\View\Exception\InvalidSectionException;
-use NamelessCoder\Fluid\View\Exception\InvalidTemplateResourceException;
+use TYPO3Fluid\Fluid\Core\Exception;
+use TYPO3Fluid\Fluid\Core\Parser\InterceptorInterface;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\AbstractNode;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\NodeInterface;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\RootNode;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
+use TYPO3Fluid\Fluid\Core\Parser\TemplateParser;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Exception as ViewHelperException;
+use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperVariableContainer;
+use TYPO3Fluid\Fluid\View\Exception as ViewException;
+use TYPO3Fluid\Fluid\View\Exception\InvalidSectionException;
+use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 
 return array(
 	'TYPO3\\Fluid\\Core\\Parser\\InterceptorInterface' => InterceptorInterface::class,

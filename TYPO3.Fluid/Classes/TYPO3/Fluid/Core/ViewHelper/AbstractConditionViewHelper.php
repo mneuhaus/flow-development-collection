@@ -11,7 +11,6 @@ namespace TYPO3\Fluid\Core\ViewHelper;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Log\SystemLoggerInterface;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
@@ -19,13 +18,14 @@ use TYPO3\Flow\Object\ObjectManagerInterface;
 use TYPO3\Flow\Reflection\ReflectionService;
 use TYPO3\Fluid\Core\Exception;
 use TYPO3\Fluid\Core\Rendering\RenderingContext;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * TODO
  *
  * @api
  */
-abstract class AbstractConditionViewHelper extends \NamelessCoder\Fluid\Core\ViewHelper\AbstractConditionViewHelper {
+abstract class AbstractConditionViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractConditionViewHelper {
 
 	/**
 	 * Reflection service

@@ -23,7 +23,7 @@ namespace TYPO3\Fluid\Core\ViewHelper;
  *
  * @deprecated
  */
-class ArgumentDefinition extends \NamelessCoder\Fluid\Core\ViewHelper\ArgumentDefinition {
+class ArgumentDefinition extends \TYPO3Fluid\Fluid\Core\ViewHelper\ArgumentDefinition {
 
 	/**
 	 * TRUE if it is a method parameter

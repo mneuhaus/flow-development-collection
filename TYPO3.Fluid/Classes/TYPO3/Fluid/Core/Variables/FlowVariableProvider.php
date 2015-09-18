@@ -11,8 +11,8 @@ namespace TYPO3\Fluid\Core\Variables;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Variables\StandardVariableProvider;
 use TYPO3\Flow\Reflection\ObjectAccess;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
 
 /**
  * Variable provider using Flow's ObjectAccess to traverse through object graphs

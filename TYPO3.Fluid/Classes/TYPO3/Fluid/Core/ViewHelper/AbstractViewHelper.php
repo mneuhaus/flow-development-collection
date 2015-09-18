@@ -11,8 +11,6 @@ namespace TYPO3\Fluid\Core\ViewHelper;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use NamelessCoder\Fluid\Core\Rendering\RenderingContextInterface;
-use NamelessCoder\Fluid\Core\ViewHelper\ViewHelperInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Log\SystemLoggerInterface;
 use TYPO3\Flow\Mvc\Controller\ControllerContext;
@@ -21,13 +19,15 @@ use TYPO3\Flow\Reflection\ReflectionService;
 use TYPO3\Fluid\Core\Exception;
 use TYPO3\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\Fluid\Core\Variables\FlowVariableProvider;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperInterface;
 
 /**
  * TODO
  *
  * @api
  */
-abstract class AbstractViewHelper extends \NamelessCoder\Fluid\Core\ViewHelper\AbstractViewHelper implements ViewHelperInterface {
+abstract class AbstractViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper implements ViewHelperInterface {
 
 	/**
 	 * Current variable container reference.

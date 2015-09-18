@@ -14,5 +14,5 @@ namespace TYPO3\Fluid\Core\ViewHelper;
 /**
  * @deprecated
  */
-class Exception extends \NamelessCoder\Fluid\Core\ViewHelper\Exception {
+class Exception extends \TYPO3Fluid\Fluid\Core\ViewHelper\Exception {
 }

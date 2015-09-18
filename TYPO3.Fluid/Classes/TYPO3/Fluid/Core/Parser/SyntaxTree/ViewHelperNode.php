@@ -14,6 +14,6 @@ namespace TYPO3\Fluid\Core\Parser\SyntaxTree;
 /**
  * @deprecated
  */
-class ViewHelperNode extends \NamelessCoder\Fluid\Core\Parser\SyntaxTree\ViewHelperNode {
+class ViewHelperNode extends \TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode {
 
 }

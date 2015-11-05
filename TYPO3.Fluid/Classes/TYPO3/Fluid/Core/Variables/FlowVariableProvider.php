@@ -2,7 +2,7 @@
 namespace TYPO3\Fluid\Core\Variables;
 
 /*                                                                        *
- * This script belongs to the TYPO3 Flow package "TYPO3.Fluid".           *
+ * This script belongs to the TYPO3 Flow package "Fluid".                 *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU Lesser General Public License, either version 3   *
@@ -13,6 +13,7 @@ namespace TYPO3\Fluid\Core\Variables;
 
 use TYPO3\Flow\Reflection\ObjectAccess;
 use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
+use TYPO3\Fluid\Core\Parser\SyntaxTree\TemplateObjectAccessInterface;
 
 /**
  * Variable provider using Flow's ObjectAccess to traverse through object graphs
@@ -29,7 +30,13 @@ class FlowVariableProvider extends StandardVariableProvider {
 	 * @return mixed
 	 */
 	public function getByPath($path, array $accessors = array()) {
-		return ObjectAccess::getPropertyPath($this->variables, $path);
+		$value = ObjectAccess::getPropertyPath($this->variables, $path);
+
+		if ($value instanceof TemplateObjectAccessInterface) {
+			$value = $value->objectAccess();
+		}
+
+		return $value;
 	}
 
 }

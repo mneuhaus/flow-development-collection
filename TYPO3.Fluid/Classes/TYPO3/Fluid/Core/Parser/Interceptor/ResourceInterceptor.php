@@ -64,21 +64,6 @@ class ResourceInterceptor implements InterceptorInterface {
 	protected $defaultPackageKey;
 
 	/**
-	 * @var ObjectManagerInterface
-	 */
-	protected $objectManager;
-
-	/**
-	 * Inject object factory
-	 *
-	 * @param ObjectManagerInterface $objectManager
-	 * @return void
-	 */
-	public function injectObjectManager(ObjectManagerInterface $objectManager) {
-		$this->objectManager = $objectManager;
-	}
-
-	/**
 	 * Set the default package key to use for resource URIs.
 	 *
 	 * @param string $defaultPackageKey

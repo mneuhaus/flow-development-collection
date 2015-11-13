@@ -11,6 +11,12 @@ namespace TYPO3\Fluid\Tests\Unit\Core\Parser\SyntaxTree;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ObjectAccessorNode;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider;
+use TYPO3\Fluid\Core\Parser\SyntaxTree\TemplateObjectAccessInterface;
+use TYPO3\Fluid\Core\Variables\FlowVariableProvider;
+
 /**
  * Testcase for ObjectAccessorNode
  */
@@ -20,14 +26,14 @@ class ObjectAccessorNodeTest extends \TYPO3\Flow\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function evaluateGetsPropertyPathFromVariableContainer() {
-		$node = new \TYPO3\Fluid\Core\Parser\SyntaxTree\ObjectAccessorNode('foo.bar');
-		$renderingContext = $this->getMock(\TYPO3\Fluid\Core\Rendering\RenderingContextInterface::class);
-		$variableContainer = new \TYPO3\Fluid\Core\ViewHelper\TemplateVariableContainer(array(
+		$node = new ObjectAccessorNode('foo.bar');
+		$renderingContext = $this->getMock(RenderingContextInterface::class);
+		$variableProvider = new FlowVariableProvider(array(
 			'foo' => array(
 				'bar' => 'some value'
 			)
 		));
-		$renderingContext->expects($this->any())->method('getTemplateVariableContainer')->will($this->returnValue($variableContainer));
+		$renderingContext->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableProvider));
 
 		$value = $node->evaluate($renderingContext);
 
@@ -38,17 +44,17 @@ class ObjectAccessorNodeTest extends \TYPO3\Flow\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function evaluateCallsObjectAccessOnSubjectWithTemplateObjectAccessInterface() {
-		$node = new \TYPO3\Fluid\Core\Parser\SyntaxTree\ObjectAccessorNode('foo.bar');
-		$renderingContext = $this->getMock(\TYPO3\Fluid\Core\Rendering\RenderingContextInterface::class);
-		$templateObjectAcessValue = $this->getMock(\TYPO3\Fluid\Core\Parser\SyntaxTree\TemplateObjectAccessInterface::class);
-		$variableContainer = new \TYPO3\Fluid\Core\ViewHelper\TemplateVariableContainer(array(
+		$node = new ObjectAccessorNode('foo.bar');
+		$renderingContext = $this->getMock(RenderingContextInterface::class);
+		$templateObjectAccessValue = $this->getMock(TemplateObjectAccessInterface::class);
+		$variableProvider = new FlowVariableProvider(array(
 			'foo' => array(
-				'bar' => $templateObjectAcessValue
+				'bar' => $templateObjectAccessValue
 			)
 		));
-		$renderingContext->expects($this->any())->method('getTemplateVariableContainer')->will($this->returnValue($variableContainer));
+		$renderingContext->expects($this->any())->method('getVariableProvider')->will($this->returnValue($variableProvider));
 
-		$templateObjectAcessValue->expects($this->once())->method('objectAccess')->will($this->returnValue('special value'));
+		$templateObjectAccessValue->expects($this->once())->method('objectAccess')->will($this->returnValue('special value'));
 
 		$value = $node->evaluate($renderingContext);
 

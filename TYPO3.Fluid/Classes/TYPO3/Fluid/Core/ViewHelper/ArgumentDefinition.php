@@ -1,140 +1,63 @@
 <?php
 namespace TYPO3\Fluid\Core\ViewHelper;
 
-/*
- * This file is part of the TYPO3.Fluid package.
- *
- * (c) Contributors of the Neos Project - www.neos.io
- *
- * This package is Open Source Software. For the full copyright and license
- * information, please view the LICENSE file which was distributed with this
- * source code.
- */
+/*                                                                        *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Fluid".           *
+ *                                                                        *
+ * It is free software; you can redistribute it and/or modify it under    *
+ * the terms of the GNU Lesser General Public License, either version 3   *
+ * of the License, or (at your option) any later version.                 *
+ *                                                                        *
+ * The TYPO3 project - inspiring people to share!                         *
+ *                                                                        */
 
 /**
  * Argument definition of each view helper argument
+ *
+ * This subclass of ArgumentDefinition from Fluid has
+ * one additional capability: defining that an argument
+ * should be expected as a parameter for the render()
+ * method - which means the ViewHelperInvoker will be
+ * processing it a bit differently. Other than this it
+ * is a normal Fluid ArgumentDefinition.
+ *
+ * @deprecated
  */
-class ArgumentDefinition
-{
-    /**
-     * Name of argument
-     *
-     * @var string
-     */
-    protected $name;
+class ArgumentDefinition extends \TYPO3Fluid\Fluid\Core\ViewHelper\ArgumentDefinition {
 
-    /**
-     * Type of argument
-     *
-     * @var string
-     */
-    protected $type;
+	/**
+	 * TRUE if it is a method parameter
+	 *
+	 * @var bool
+	 */
+	protected $isMethodParameter = FALSE;
 
-    /**
-     * Description of argument
-     *
-     * @var string
-     */
-    protected $description;
+	/**
+	 * Constructor for this argument definition.
+	 *
+	 * @param string $name Name of argument
+	 * @param string $type Type of argument
+	 * @param string $description Description of argument
+	 * @param bool $required TRUE if argument is required
+	 * @param mixed $defaultValue Default value
+	 * @param bool $isMethodParameter TRUE if this argument is a method parameter
+	 */
+	public function __construct($name, $type, $description, $required, $defaultValue = NULL, $isMethodParameter = FALSE) {
+		$this->name = $name;
+		$this->type = $type;
+		$this->description = $description;
+		$this->required = $required;
+		$this->defaultValue = $defaultValue;
+		$this->isMethodParameter = $isMethodParameter;
+	}
 
-    /**
-     * Is argument required?
-     *
-     * @var boolean
-     */
-    protected $required = false;
+	/**
+	 * TRUE if it is a method parameter
+	 *
+	 * @return bool TRUE if it's a method parameter
+	 */
+	public function isMethodParameter() {
+		return $this->isMethodParameter;
+	}
 
-    /**
-     * Default value for argument
-     *
-     * @var mixed
-     */
-    protected $defaultValue = null;
-
-    /**
-     * TRUE if it is a method parameter
-     *
-     * @var boolean
-     */
-    protected $isMethodParameter = false;
-
-    /**
-     * Constructor for this argument definition.
-     *
-     * @param string $name Name of argument
-     * @param string $type Type of argument
-     * @param string $description Description of argument
-     * @param boolean $required TRUE if argument is required
-     * @param mixed $defaultValue Default value
-     * @param boolean $isMethodParameter TRUE if this argument is a method parameter
-     */
-    public function __construct($name, $type, $description, $required, $defaultValue = null, $isMethodParameter = false)
-    {
-        $this->name = $name;
-        $this->type = $type;
-        $this->description = $description;
-        $this->required = $required;
-        $this->defaultValue = $defaultValue;
-        $this->isMethodParameter = $isMethodParameter;
-    }
-
-    /**
-     * Get the name of the argument
-     *
-     * @return string Name of argument
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get the type of the argument
-     *
-     * @return string Type of argument
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Get the description of the argument
-     *
-     * @return string Description of argument
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Get the optionality of the argument
-     *
-     * @return boolean TRUE if argument is optional
-     */
-    public function isRequired()
-    {
-        return $this->required;
-    }
-
-    /**
-     * Get the default value, if set
-     *
-     * @return mixed Default value
-     */
-    public function getDefaultValue()
-    {
-        return $this->defaultValue;
-    }
-
-    /**
-     * TRUE if it is a method parameter
-     *
-     * @return boolean TRUE if it's a method parameter
-     */
-    public function isMethodParameter()
-    {
-        return $this->isMethodParameter;
-    }
 }

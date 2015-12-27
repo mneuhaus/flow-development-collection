@@ -7,3 +7,7 @@ TYPO3:
             'ajaxWidget':
               position: 'before routing'
               component: 'TYPO3\Fluid\Core\Widget\AjaxWidgetComponent'
+    object:
+      includeClasses:
+        # FIXME: We need to exclude StandardVariableProvider because of it's constructor arguments that can't be proxied for some reason
+        'typo3fluid.fluid' : ['(?!^TYPO3Fluid\\Fluid\\Core\\Variables\\StandardVariableProvider$)(^.*$).*']

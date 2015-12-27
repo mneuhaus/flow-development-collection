@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\Fluid\Core\Parser\SyntaxTree;
+namespace TYPO3\Fluid\Core\Widget\Exception;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "TYPO3.Fluid".           *
@@ -12,8 +12,8 @@ namespace TYPO3\Fluid\Core\Parser\SyntaxTree;
  *                                                                        */
 
 /**
- * @deprecated
+ * An exception if no widget Request could be found inside <f:renderChildren>.
  */
-class ViewHelperNode extends \TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode {
+class WidgetRequestNotFoundException extends \TYPO3\Fluid\Core\Widget\Exception {
 
 }

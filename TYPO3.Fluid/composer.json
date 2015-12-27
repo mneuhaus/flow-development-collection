@@ -10,5 +10,12 @@
 		"psr-0": {
 			"TYPO3\\Fluid": "Classes"
 		}
+	},
+	"extra": {
+		"helhum/class-alias-loader": {
+			"class-alias-maps": [
+				"Migrations/ClassAliasMap.php"
+			]
+		}
 	}
 }
